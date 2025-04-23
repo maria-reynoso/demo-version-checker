@@ -8,7 +8,7 @@ A demo using version checker and GKE cluster.
 
 Upgrading Kubernetes can be a complex process, especially if add-ons (e.g., Cert-Manager, Istio, Flux, ingress-nginx, etc) are not compatible with the target Kubernetes version. Ensuring that add-ons are up-to-date simplifies the Kubernetes upgrade process and reduces the risk of incompatibilities. Similarly, keeping add-ons updated ensures that when it's time to upgrade Kubernetes, the process is smoother because the add-ons are already aligned with the latest versions.
 
-This use case demonstrates how version-checker can help ensure add-ons are up-to-date, making Kubernetes upgrades simpler and more reliable.
+This demo highlights how version-checker can help ensure add-ons are up-to-date, making Kubernetes upgrades simpler
 
 **Challenges**
 - A new GKE auto-upgrade happens overnight.
@@ -22,8 +22,8 @@ Using version-checker can help with the following:
 
 - Monitor Addon Versions
     - Use version-checker to monitor the versions of critical add-ons running in the cluster. 
-    - version-checker tracks images from registries like GCR, Docker Hub, or quay.io.
-    - Version Checker exposes metrics for these add-ons, showing whether they are using the latest available versions as well as latest kubernetes version
+    - Supports registries like GCR, Docker Hub, or quay.io.
+    - Exposes Prometheus metrics to show whether add-ons are using the latest available versions.
     - Alerts can be configured to notify you when an image is outdated. They can be set up via Slack, triggering a notification if an outdated add-on is detected before the next upgrade.
 - Integration with Prometheus & Grafana for Visibility:.
     - Use Prometheus to collect these metrics and Grafana to visualize addons versions.
@@ -31,8 +31,8 @@ Using version-checker can help with the following:
     - Regularly check for updates to add-ons and ensure they are upgraded to the latest versions.
     - This ensures that add-ons are always compatible with the current Kubernetes version and prepared for future upgrades.
 - Simplify Kubernetes Upgrades
-    - When upgrading Kubernetes, verify that all add-ons are already using the latest versions compatible with the target Kubernetes version.
-    - This reduces the risk of downtime or failures caused by outdated or incompatible add-ons.
+    - Verify that all add-ons are up-to-date and compatible with the target Kubernetes version before upgrading.
+    - Reduces the risk of downtime or failures caused by outdated or incompatible add-ons.
 
 ### Implementation Steps
 
@@ -48,7 +48,7 @@ make install-addons
 ```
 
 - A CI/CD pipeline tool (GitHub Actions).
-- Gatekeeper (Optional)
+- Gatekeeper (optional) for policy enforcement
 
 1. Deploy version checker via helm
 
@@ -56,12 +56,15 @@ make install-addons
 make version-checker
 ```
 
-2. Import version checker dashboard into Grafana
+2. Import the version-checker dashboard into Grafana to visualize add-on versions.
+
 3. Visualize addons versions using Grafana dashboard
+
 4. Add a step in the CI/CD pipeline to query version-checker metrics and validate add-on versions
-5. Validate versions are up to date applying any (or both) of the following
-    - Create a policy enforcement that only allows up to 2 minor or patch versions
-    - Create script to validate during deployment pipeline
+
+5. Validate versions are up to date applying any (or both) of the following:
+    - Create a policy enforcement that only allows up to 2 minor or patch versions behind the latest.
+    - Create script to validate add-on versions during deployment pipeline.
 6. If any add-on is not using the latest version, apply any of the following:
     - The CI/CD pipeline fails with an error message
-    - Audit logs warning addons are out of date (using gatekeeper)
+    - Generate audit logs warning that add-ons are out of date (using Gatekeeper)
