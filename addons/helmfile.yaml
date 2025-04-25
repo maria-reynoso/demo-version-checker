@@ -27,7 +27,6 @@ releases:
 - name: cert-manager
   version: v1.15.3
   chart: cert-manager/cert-manager
-  condition: cert-manager.enabled
   namespace: cert-manager
   createNamespace: true
   values:
@@ -41,28 +40,26 @@ releases:
       annotations:
         {{ requiredEnv "CERT_MANAGER_SA_ANNOTATION" }}
 
-- name: grafana
-  version: "8.4.7"
-  chart: grafana/grafana
-  condition: grafana.enabled
-  namespace: monitoring
-  values:
-  - "./config/grafana-values.yaml"
-  - adminUser: {{ requiredEnv "GRAFANA_ADMIN_USER" }}
-  - adminPassword: {{ requiredEnv "GRAFANA_ADMIN_PW" }}
-
 - name: prometheus
   version: "25.27.0"
   chart: "prometheus/prometheus"
-  condition: prometheus.enabled
   namespace: monitoring
+  createNamespace: true
   values:
   - "./config/prometheus-values.yaml"
+
+- name: grafana
+  version: "8.4.7"
+  chart: grafana/grafana
+  namespace: monitoring
+  values:
+  - "./config/grafana-values.yaml"
+  # - adminUser: {{ requiredEnv "GRAFANA_ADMIN_USER" }}
+  # - adminPassword: {{ requiredEnv "GRAFANA_ADMIN_PW" }}
 
 - name: gatekeeper
   version: v3.19.0
   namespace: monitoring
-  createNamespace: true
   chart: gatekeeper/gatekeeper
   values:
     - ./values/gatekeeper-values.yaml

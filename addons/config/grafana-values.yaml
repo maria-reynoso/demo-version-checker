@@ -1,0 +1,14 @@
+adminPassword: admin123
+service:
+  type: LoadBalancer
+
+# datasources:
+#   datasources.yaml:
+#     apiVersion: 1
+#     datasources:
+#       - name: Prometheus
+#         type: prometheus
+#         uid: ""
+#         url: http://prometheus-server
+#         isDefault: true
+#         editable: true

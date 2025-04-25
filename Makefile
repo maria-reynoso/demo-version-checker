@@ -13,7 +13,7 @@ cluster: ## Setup cluster
 		--num-nodes 4 \
 		--zone ${ZONE} \
 		--project ${PROJECT_ID}
-	gcloud container clusters get-credentials ${CLUSTER_NAME}
+	gcloud container clusters get-credentials ${CLUSTER_NAME} --zone ${ZONE} --project ${PROJECT_ID}
 
 install-addons: ## Install addons
 	helm repo add jetstack https://charts.jetstack.io --force-update
@@ -24,11 +24,11 @@ install-addons: ## Install addons
 	cert-manager jetstack/cert-manager \
 		--namespace cert-manager \
 		--create-namespace \
-		--version v1.17.0 \
+		--version v1.15.5 \
 		--set crds.enabled=true
-	helm install -n monitoring --create-namespace kube-prometheus-stack prometheus-community/kube-prometheus-stack \
+	helm install -n monitoring --create-namespace prometheus prometheus-community/kube-prometheus-stack \
 		--set prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues=false,prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues=false
-	helm install my-grafana grafana/grafana --namespace monitoring
+	helm install grafana grafana/grafana --namespace monitoring
 
 version-checker: ## Install version-checker
 	helm repo add jetstack https://charts.jetstack.io
